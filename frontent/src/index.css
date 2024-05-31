@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.login-background {
+    background-image: url('../src/assets/pexels-kristaps-ungurs-1831590-20489030.jpg'); /* Replace path_to_your_image.jpg with the actual path to your image */
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .register-background {
+    background-image: url('../src/assets/pexels-kristaps-ungurs-1831590-20489030.jpg'); /* Replace path_to_your_image.jpg with the actual path to your image */
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
