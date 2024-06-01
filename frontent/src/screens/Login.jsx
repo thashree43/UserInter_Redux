@@ -1,40 +1,38 @@
-
-import { useForm } from "react-hook-form";
-import { Form, Col, Row, Button } from "react-bootstrap";
-import {useDispatch,useSelector} from "react-redux"
-import { Link,useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import Forms from "../components/Forms";
-import {setCredentials} from "../slice/authSlice.js"
-import {useLoginMutation} from "../slice/userapiSlice.js"
+// components/Login.jsx
+import { useForm } from 'react-hook-form';
+import { Form, Col, Row, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import Forms from '../components/Forms';
+import { setCredentials } from '../slice/authSlice.js';
+import { useLoginMutation } from '../slice/userapiSlice.js';
+import { toast } from 'react-toastify';
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ mode: "onTouched" });
+  const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onTouched' });
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
- 
-  const [login,{isloading}]=useLoginMutation()
-  const {userInfo} = useSelector((state)=>state.auth)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
+  const [login, { isLoading }] = useLoginMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
     if (userInfo) {
-      navigate('/')
+      navigate('/');
     }
-  })
+  }, [userInfo, navigate]);
 
-  const onSubmit = async(data) => {
-    console.log("Form Data: ", data);
+  const onSubmit = async (data) => {
+    console.log('Form Data: ', data);
     try {
       const res = await login(data).unwrap();
-      dispatch(setCredentials({...res}))
-      navigate('/')
+      dispatch(setCredentials({ ...res }));
+      toast.success('Login successful!');
+      navigate('/');
     } catch (error) {
-      console.log(error.data.message || error.error);
+      toast.error(error.data.message || error.error);
     }
   };
 
@@ -44,17 +42,15 @@ const Login = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-center mb-4">Login Form</h1>
           <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="2">
-              Email
-            </Form.Label>
+            <Form.Label column sm="2">Email</Form.Label>
             <Col sm="10">
               <Form.Control
                 placeholder="example@gmail.com"
-                {...register("email", {
-                  required: "Enter email",
+                {...register('email', {
+                  required: 'Enter email',
                   pattern: {
                     value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                    message: "Invalid email address",
+                    message: 'Invalid email address',
                   },
                 })}
               />
@@ -67,18 +63,16 @@ const Login = () => {
           </Form.Group>
 
           <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
-            <Form.Label column sm="2">
-              Password
-            </Form.Label>
+            <Form.Label column sm="2">Password</Form.Label>
             <Col sm="10">
               <Form.Control
                 type="password"
                 placeholder="Password"
-                {...register("password", {
-                  required: "Enter the password",
+                {...register('password', {
+                  required: 'Enter the password',
                   pattern: {
                     value: /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/,
-                    message: "Password must include at least one uppercase letter, one special character, one number, and be at least 8 characters long",
+                    message: 'Password must include at least one uppercase letter, one special character, one number, and be at least 8 characters long',
                   },
                 })}
               />

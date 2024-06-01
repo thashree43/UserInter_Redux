@@ -5,7 +5,7 @@ const Dburl = async () => {
     const conn = await mongoose.connect(process.env.URL_Mongoo, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      serverSelectionTimeoutMS: 5000, 
     });
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
