@@ -7,8 +7,9 @@ import upload from "../middleware/multter.js";
 
 
 router.post('/signup',upload.single('image'), userregister);
-router.post('/auth', userauth);
+router.post('/auth', userauth); 
 router.post('/logout',userlogout)
-router.get('/profile',protect,getuserprofile)
-router.put('/updateprofile',protect,updateprofile)
+router.route('/profile').get(protect,getuserprofile).put(protect,upload.single('image'),updateprofile)
+
+
 export default router;

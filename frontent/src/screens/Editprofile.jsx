@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Form, Button, Image, Container } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,46 +12,55 @@ const EditProfile = () => {
     mode: "onTouched"
   });
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const [updateUser, ] = useUpdateUserMutation();
 
   useEffect(() => {
     if (userInfo) {
       setValue('name', userInfo.name);
       setValue('email', userInfo.email);
+      setValue('image', userInfo.image)
+      setImagePreview(userInfo.image);
     }
   }, [userInfo, setValue]);
 
-  const handleImage = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
-  };
+  // const handleImage = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log('iam image', file)
+  //   setImage(file);
+  //   console.log('setter,', image)
+  //   setImagePreview(URL.createObjectURL(file));
+  // };
 
-  const validateFile = (fileList) => {
-    if (fileList.length === 0) return "Please upload an image";
-    const file = fileList[0];
-    const allowedTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/bmp',
-      'image/tiff',
-      'image/webp'
-    ];
-    return allowedTypes.includes(file.type) || "Only jpg, jpeg, png, gif, bmp, tiff, webp files are allowed";
-  };
+  // const validateFile = (fileList) => {
+  //   if (fileList.length === 0) return "Please upload an image";
+  //   const file = fileList[0];
+  //   const allowedTypes = [
+  //     'image/jpeg',
+  //     'image/png',
+  //     'image/gif',
+  //     'image/bmp',
+  //     'image/tiff',
+  //     'image/webp'
+  //   ];
+  //   return allowedTypes.includes(file.type) || "Only jpg, jpeg, png, gif, bmp, tiff, webp files are allowed";
+  // };
 
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('email', data.email);
+    console.log('image.................', image)
+    console.log('setVlIma', data.image)
     if (image) formData.append('image', image);
 
     try {
       const res = await updateUser(formData).unwrap();
-      dispatch(setCredentials(res));
+
+      dispatch(setCredentials({ ...res }));
       toast.success('Profile updated successfully');
       navigate('/profile');
     } catch (err) {
@@ -62,7 +71,7 @@ const EditProfile = () => {
   return (
     <Container>
       <h1>Edit Profile</h1>
-      <Form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+      <Form onSubmit={handleSubmit(onSubmit)} >
         <Form.Group className='my-2' controlId='name'>
           <Form.Label>Name</Form.Label>
           <Form.Control
@@ -95,16 +104,20 @@ const EditProfile = () => {
             </p>
           )}
         </Form.Group>
-        
+
         <Form.Group className='my-2' controlId='image'>
           <Form.Label>Profile Image</Form.Label>
+          {imagePreview && (
+            <Image src={imagePreview} roundedCircle className="my-3"
+              style={{ width: "150px", height: "150px", objectFit: "cover" }} />
+          )}
           <Form.Control
             type='file'
             accept="image/*"
-            onChange={handleImage}
-            {...register('image', {
-              validate: validateFile
-            })}
+            onChange={(e) => setImage(e.target.files[0])}
+            // {...register('image', {
+            //   validate: validateFile
+            // })}
           ></Form.Control>
           {errors.image && (
             <p className="text-xs m-2 text-red-600">

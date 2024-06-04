@@ -23,6 +23,7 @@ export const userapiSlice = apiSlice.injectEndpoints({
         url: `${USER_URL}/profile`,
         method: 'PUT',
         body: data,
+      
       }),
     }),
     logout: builder.mutation({
@@ -39,5 +40,5 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
-  useUpdateUserMutation, // Correct export
+  useUpdateUserMutation, 
 } = userapiSlice;

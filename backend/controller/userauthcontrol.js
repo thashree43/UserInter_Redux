@@ -3,12 +3,15 @@ import User from "../model/userModel.js"
 import generatetoken from "../utilis/gentok.js";
 import bcrypt from "bcryptjs"
 import cloudinary from 'cloudinary'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // cloudinary config
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
 
@@ -100,7 +103,7 @@ const userregister = asyncHandler(async (req, res) => {
 
     console.log("Received user data:", { name, email, password });
 
-    // Check if all required fields are present
+
     if (!name || !email || !password) {
         return res.status(400).json({ message: "Please provide name, email, and password" });
     }
@@ -114,10 +117,11 @@ const userregister = asyncHandler(async (req, res) => {
     try {
 
         const passwordHash = await bcrypt.hash(password, 10);
-
+        console.log(passwordHash,"the hashed password may here ");
         if(req.file){
             const result = await cloudinary.uploader.upload(req.file.path)
-            profileImage = result.secure.url
+            console.log("the result of the cloudinary ",result );
+            profileImage = result.secure_url
         }
         const user = new User({
             name,
@@ -138,7 +142,6 @@ const userregister = asyncHandler(async (req, res) => {
                 name: user.name,
                 email: user.email,
                 image: user.image,
-                token: regtoken,
             }
         });
 
@@ -164,33 +167,43 @@ const getuserprofile = asyncHandler(async(req,res)=>{
         _id: req.user._id,
         name: req.user.name,
         email: req.user.email,
-        
+        image:req.user.image
     }
     res.status(200).json(user)
 })
 
-const updateprofile = asyncHandler(async(req,res)=>{
-    const userdata = await User.findById(req.user._id)
+const updateprofile = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
 
-    if (userdata) {
-        userdata.name = req.body.name || userdata.name
-        userdata.email = req.body.email || userdata.email
-
-        if (req.body.password) {
-            userdata.password=req.body.password
-
+    if (user) {
+        if (user.image) {
+            const imageId = user.image.match(/\/upload\/v\d+\/([^./]+)\./);
+            if (imageId && imageId[1]) {
+                await cloudinary.uploader.destroy(imageId[1]);
+            }
         }
-        const updated = await userdata.save()
+
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path);
+            user.image = result.secure_url;
+        }
+
+        const updatedUser = await user.save();
         res.status(200).json({
-            _id:updated._id,
-            name:updated.name,
-            email:updated.email
-        })
-    }else{
-        res.status(404)
-        throw new Error("User not found")
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            image: updatedUser.image,
+        });
+    } else {
+        res.status(404);
+        throw new Error("User not found");
     }
-})
+});
+
 
 export {
     userauth,

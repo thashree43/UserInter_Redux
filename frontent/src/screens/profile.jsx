@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { Button, Image, Container } from 'react-bootstrap';
-// import image from '../../../backend/public/uploads'
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -18,8 +17,8 @@ const Profile = () => {
       <h1>Profile</h1>
       <div className="text-center mb-4">
         <Image
-          src={}
-          alt="Profile"
+          src={userInfo.image}
+          alt="profile"
           roundedCircle
           fluid
           className="mb-3"

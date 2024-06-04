@@ -31,9 +31,10 @@ const Register = () => {
   
     try {
       const res = await registerUser(formData).unwrap();
-      dispatch(setCredentials({ ...res }));
+      console.log("the res datas may here ",res);
+      dispatch(setCredentials({ ...res.user }));
       toast.success('Registered Successfully');
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       const errorMessage = error?.data?.message || error?.error || "An error occurred";
       toast.error(errorMessage);

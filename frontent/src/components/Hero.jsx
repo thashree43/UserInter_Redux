@@ -1,10 +1,27 @@
 import { Card, Container, Button } from 'react-bootstrap'
+import {useSelector} from "react-redux"
+
 
 const Hero = () => {
+const {userInfo} = useSelector((state)=>state.auth) 
   return (
     <div className='py-5'>
       <Container className='d-flex justify-content-center'>
-        <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-75'>
+
+
+           { userInfo ? (
+                  <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-45 bg-yellow-200  '>
+
+             <div>
+             <h1>Welcome, {userInfo.name}!</h1>
+             <p>You are logged in. <br/> your email id is {userInfo.email}</p>
+             
+           </div>
+          </Card>
+
+           ):
+            (
+              <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-75'>
           <h1 className='text-center mb-4'>User Authentication</h1>
           <p className='text-center mb-4'>
             Its a User Authentication,
@@ -18,8 +35,11 @@ const Hero = () => {
             <Button variant='secondary' href='/register'>
               Sign Up
             </Button>
+            
           </div>
-        </Card>
+          </Card>
+
+         )}
       </Container>
     </div>
   )

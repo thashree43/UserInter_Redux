@@ -1,14 +1,23 @@
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 // Get the current module's file path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Directory to save the uploaded files
+const uploadDir = 'uploads/';
+
+// Ensure the directory exists
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads');
+    cb(null, uploadDir);
   },
   filename(req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
@@ -26,7 +35,6 @@ function checkFileType(file, cb) {
     cb('Images only!');
   }
 }
-console.log("the image added");
 
 const upload = multer({
   storage,

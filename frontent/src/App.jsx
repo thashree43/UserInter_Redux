@@ -9,6 +9,8 @@ import Register from './screens/Register.jsx';
 import Store from './store.jsx';
 import Profile from './screens/profile.jsx';
 import EditProfile from './screens/Editprofile.jsx';
+import Adminhome from './Admincomponent/Adminhome.jsx';
+import AdminLogin from './Admincomponent/AdminLogin.jsx';
 
 const App = () => {
   return (
@@ -21,7 +23,9 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path="/profile" element={<Profile />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path='/admin' element={<AdminLogin/>}/>
+          <Route path="/adminhome" element={<Adminhome/>}/>
         </Routes>
       </Router>
     </Provider>

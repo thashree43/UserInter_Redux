@@ -17,6 +17,10 @@ const UserModel = mongoose.Schema({
     image:{
         type:String
     },
+    is_Admin:{
+        type:Boolean,
+        default:false
+    }
     
 },{timestamps:true},)
 
