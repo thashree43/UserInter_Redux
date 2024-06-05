@@ -1,66 +1,52 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Form, Col, Row, Button } from "react-bootstrap";
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from "react-router-dom";
-import Forms from "../components/Forms";
-import { toast } from 'react-toastify';
-import { useRegisterMutation } from "../slice/userapiSlice";
-import { setCredentials } from "../slice/authSlice.js";
+import { Button, Col, Row } from "react-bootstrap"
+import { Form } from "react-bootstrap"; 
+import { Link, useNavigate } from "react-router-dom"
+import Forms from "../components/Forms"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify";
+import {useAdminadduserMutation} from "../Adminslice/adminapislice"
 
-const Register = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.auth);
-  const [registerUser] = useRegisterMutation();
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate('/login');
+const Adminadduser = () => {
+
+    const navigate = useNavigate()
+    const [Adminadduser] = useAdminadduserMutation()
+    const {register,handleSubmit,formState:{errors}} = useForm({mode:'onTouched'})
+
+    const onSubmit =async(data)=>{
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('password', data.password);
+        formData.append('image', data.image[0]); 
+        try {
+            const res = await Adminadduser(formData).unwrap()
+            console.log(res,"the  data in the admin adduser side ");
+            toast.success("user successfully added")
+            navigate("/admin/admindashboard")
+        } catch (error) {
+            toast.error("failed to add user")
+        }
+    
     }
-  }, [navigate, userInfo]);
-
-  const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onTouched" });
-
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('email', data.email);
-    formData.append('password', data.password);
-    formData.append('image', data.image[0]);
-
-    try {
-      const res = await registerUser(formData).unwrap();
-      console.log("the res datas may here ", res);
-      dispatch(setCredentials({ ...res.user }));
-      toast.success('Registered Successfully');
-      navigate('/login');
-    } catch (error) {
-      const errorMessage = error?.data?.message || error?.error || "An error occurred";
-      toast.error(errorMessage);
-    }
-  };
-
-
-  const validateFile = (fileList) => {
-    if (fileList.length === 0) return "Please upload an image";
-    const file = fileList[0];
-    const allowedTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/bmp',
-      'image/tiff',
-      'image/webp'
-    ];
-    return allowedTypes.includes(file.type) || "Only jpg, jpeg, png, gif, bmp, tiff, webp files are allowed";
-  };
-
+    const validateFile = (fileList) => {
+        if (fileList.length === 0) return "Please upload an image";
+        const file = fileList[0];
+        const allowedTypes = [
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/bmp',
+          'image/tiff',
+          'image/webp'
+        ];
+        return allowedTypes.includes(file.type) || "Only jpg, jpeg, png, gif, bmp, tiff, webp files are allowed";
+      };
   return (
     <div className="register-background bg-slate-500">
       <Forms>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="text-center mb-4">Register</h1>
+          <h1 className="text-center mb-4">ADD USER</h1>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="2">Name</Form.Label>
             <Col sm="10">
@@ -134,11 +120,11 @@ const Register = () => {
           </Row>
         </Form>
         <Row className="py-3">
-          <Col>Already have an account? <Link to="/login">Login</Link></Col>
+          <Col>Already have an account? <Link to="/login">Dashboard</Link></Col>
         </Row>
       </Forms>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Adminadduser

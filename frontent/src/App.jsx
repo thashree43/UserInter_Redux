@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Store from './store.jsx';
-import Userroute from './Routes/Userroute.jsx';
-import Adminroute from './Routes/Adminroute.jsx';
+import Store from './store';
+import Userroute from './Routes/Userroute';
+import Adminroute from './Routes/Adminroute';
 
 const App = () => {
   return (

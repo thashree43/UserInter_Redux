@@ -3,6 +3,7 @@ import User from "../model/userModel.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "cloudinary";
 import dotenv from "dotenv";
+import generatetoken from "../utilis/gentok.js"
 
 dotenv.config();
 
@@ -83,7 +84,61 @@ const updateuser = asyncHandler(async (req, res) => {
 });
 
 // ADD_NEW_USER
-const addnewuser = asyncHandler(async (req, res) => {});
+const addnewuser = asyncHandler(async (req, res) => {
+
+  const { name, email, password } = req.body;
+    let profileImage = '';
+
+
+    console.log("Received user data:", { name, email, password });
+
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "Please provide name, email, and password" });
+    }
+
+    const userExist = await User.findOne({ email });
+
+    if (userExist) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+
+    try {
+
+        const passwordHash = await bcrypt.hash(password, 10);
+        console.log(passwordHash,"the hashed password may here ");
+        if(req.file){
+            const result = await cloudinary.uploader.upload(req.file.path)
+            console.log("the result of the cloudinary ",result );
+            profileImage = result.secure_url
+        }
+        const user = new User({
+            name,
+            email,
+            password: passwordHash,
+            image: profileImage,
+        });
+
+        await user.save();
+
+        const regtoken = generatetoken(res, user._id);
+        console.log(regtoken, "register token may here");
+
+        res.status(201).json({
+            message: 'User registered successfully',
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                image: user.image,
+            }
+        });
+        console.log("user successfully added ");
+    } catch (error) {
+        console.error("Error during user registration:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 // DELET_USER
 const deleteuser = asyncHandler(async (req, res) => {

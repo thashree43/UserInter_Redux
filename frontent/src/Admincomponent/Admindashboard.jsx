@@ -1,15 +1,14 @@
 import { useNavigate } from "react-router";
-import { useGetusersMutation,useDeleteuserMutation } from "../Adminslice/adminapislice.js";
+import { useGetusersMutation, useDeleteuserMutation } from "../Adminslice/adminapislice.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { useDispatch } from "react-redux";
-import {setSelectedUser} from "../Adminslice/adminauthslice"
-
+import { setSelectedUser } from "../Adminslice/adminauthslice";
 
 const Admindashboard = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,13 +16,13 @@ const Admindashboard = () => {
   const [getUsers] = useGetusersMutation();
   const [deleteuser] = useDeleteuserMutation();
 
-  console.log("Users",users);
+  console.log("Users", users);
 
   const fetchData = async () => {
     try {
       const response = await getUsers().unwrap();
-      console.log("the response of admindashboard",response);
-        setUsers(response);
+      console.log("the response of admindashboard", response);
+      setUsers(response);
       setFilteredUsers(response);
     } catch (error) {
       toast.error("Failed to fetch users");
@@ -33,7 +32,7 @@ const Admindashboard = () => {
   useEffect(() => {
     console.log('aaaa');
     fetchData();
-  },[]);
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -80,11 +79,9 @@ const Admindashboard = () => {
 
   return (
     <>
-       <div className="flex justify-between items-center  mb-6">
-        <div className="flex-1">
-          <h1 className="text-xl font-semibold justify-center">Admin Dashboard</h1>
-        </div>
-        <div className="pr-28">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center space-x-4">
+          <h1 className="text-xl font-semibold text-center mb-4">Admin Dashboard</h1>
           <input
             type="text"
             placeholder="Search users"
@@ -93,6 +90,12 @@ const Admindashboard = () => {
             className="border p-2 rounded"
           />
         </div>
+        <button
+          onClick={() => navigate('/admin/adminadduser')}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Add User
+        </button>
       </div>
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full divide-y divide-gray-200">
@@ -125,7 +128,7 @@ const Admindashboard = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers ? (
+            {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <tr key={user._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
