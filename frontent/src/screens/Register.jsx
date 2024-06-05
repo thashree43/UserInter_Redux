@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Form, Col, Row, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
-  const [registerUser, { isLoading }] = useRegisterMutation();
+  const [registerUser] = useRegisterMutation();
 
   useEffect(() => {
     if (userInfo) {
