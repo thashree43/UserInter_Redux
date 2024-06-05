@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router";
-import { useGetusersMutation,useDeleteuserMutation } from "../Adminslice/adminapislice";
+import { useGetusersMutation,useDeleteuserMutation } from "../Adminslice/adminapislice.js";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
+import { useDispatch } from "react-redux";
+import {setSelectedUser} from "../Adminslice/adminauthslice"
 
 
 const Admindashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,18 +17,23 @@ const Admindashboard = () => {
   const [getUsers] = useGetusersMutation();
   const [deleteuser] = useDeleteuserMutation();
 
+  console.log("Users",users);
+
+  const fetchData = async () => {
+    try {
+      const response = await getUsers().unwrap();
+      console.log("the response of admindashboard",response);
+        setUsers(response);
+      setFilteredUsers(response);
+    } catch (error) {
+      toast.error("Failed to fetch users");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getUsers().unwrap();
-          setUsers(response);
-        setFilteredUsers(response);
-      } catch (error) {
-        toast.error("Failed to fetch users");
-      }
-    };
+    console.log('aaaa');
     fetchData();
-  }, [getUsers]);
+  },[]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -43,6 +51,7 @@ const Admindashboard = () => {
   };
 
   const handleEditProfileClick = (user) => {
+    dispatch(setSelectedUser(user));
     navigate(`/admin/admin_editprofile/${user._id}`);
   };
 
@@ -116,7 +125,7 @@ const Admindashboard = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.length > 0 ? (
+            {filteredUsers ? (
               filteredUsers.map((user) => (
                 <tr key={user._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -130,7 +139,7 @@ const Admindashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => handleEditProfileClick(user._id)}
+                      onClick={() => handleEditProfileClick(user)}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit

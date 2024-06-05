@@ -18,7 +18,7 @@ const Adminhome = () => {
                         </p>
                     </div>
                     <div className="mt-4 w-full flex justify-center">
-                        <Link to='/admin/admindasboard'>
+                        <Link to='/admin/admindashboard'>
                     <Button className="flex items-center bg-white border hover:bg-indigo-500 hover:text-white transition duration-500  border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         GO TO DASHBOARD</Button>
                         </Link>

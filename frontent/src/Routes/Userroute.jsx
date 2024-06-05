@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Homescreen from '../screens/Homescreen';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
@@ -12,7 +12,6 @@ const Userroute = () => {
         <>
          <Header />
             <Routes>
-               
                 <Route path='/' element={<Homescreen />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />

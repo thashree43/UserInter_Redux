@@ -13,7 +13,7 @@ const Adminroute = () => {
         <Routes>
           <Route path='/' element={<AdminLogin/>}/>
           <Route path="/adminhome" element={<Adminhome/>}/>
-          <Route path='/admindasboard' element={<Admindashboard/>}/>
+          <Route path='/admindashboard' element={<Admindashboard/>}/>
           <Route path='/admin_editprofile/:id' element={<AdminEditProfile/>}/>
         </Routes>
         </>

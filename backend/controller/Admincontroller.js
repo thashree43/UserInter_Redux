@@ -51,34 +51,34 @@ const admindashboard = asyncHandler(async (req, res) => {
 // UPDATE USER
 
 const updateuser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body._id);
-  console.log(user ,"the user data whole",user);
+  const user = await User.findById(req.params.id);
+  console.log("the user data is here ",user);
   if (user) {
-    if (user.image) {
-      const imageId = user.image.match(/\/upload\/v\d+\/([^./]+)\./);
-      if (imageId && imageId[1]) {
-        await cloudinary.uploader.destroy(imageId[1]);
+      if (user.image && req.file) {
+          const imageId = user.image.match(/\/upload\/v\d+\/([^./]+)\./);
+          if (imageId && imageId[1]) {
+              await cloudinary.uploader.destroy(imageId[1]);
+          }
       }
-    }
 
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path);
-      user.image = result.secure_url;
-    }
+      if (req.file) {
+          const result = await cloudinary.uploader.upload(req.file.path);
+          user.image = result.secure_url;
+      }
 
-    const updatedUser = await user.save();
-    res.status(200).json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      image: updatedUser.image,
-    });
+      const updatedUser = await user.save();
+      res.status(200).json({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          image: updatedUser.image,
+      });
   } else {
-    res.status(404);
-    throw new Error("User not found");
+      res.status(404);
+      throw new Error("User not found");
   }
 });
 

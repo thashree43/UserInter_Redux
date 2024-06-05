@@ -10,5 +10,5 @@ router.post("/adminlogout",adminlogout)
 router.route('/userslist').get(adminprotect,admindashboard).post(adminprotect,upload.single('image'),addnewuser)
 router.delete('/userslist/:userId',adminprotect,deleteuser)
 
-router.put('/updateuser',adminprotect,upload.single('image'),updateuser)
+router.put('/updateuser/:id', adminprotect, upload.single('image'), updateuser);
 export default router
